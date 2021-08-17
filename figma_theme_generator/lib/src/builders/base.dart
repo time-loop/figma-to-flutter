@@ -41,7 +41,7 @@ String buildBoxShadowInstance(Effect effect) {
 }
 
 String buildTextStyleInstance(
-    String package, TypeStyle style, List<Paint> fills) {
+    String package, TypeStyle style, List<Paint> fills, {String debugLabel}) {
   /// Only color paint should be used as text fills since Flutter
   /// is not really optimized for drawing gradient fills or image fills
   final colorPaint = (style.fills ?? (fills ?? const <Paint>[])).firstWhere(
@@ -58,10 +58,13 @@ String buildTextStyleInstance(
   );
   final color = buildColorInstance(colorPaint.color, colorPaint.opacity);
   return 'TextStyle('
+      'debugLabel: \'${debugLabel ?? (style.fontFamily + ' ' + style.fontSize.toString() + ' ' + style.fontWeight.toString())}\','
       'fontFamily: \'${style.fontFamily}\','
       '${package != null ? 'package: \'$package\',' : ''}'
       'fontSize: ${style.fontSize.buildDouble()},'
       'fontWeight: FontWeight.w${style.fontWeight.toInt()},'
+      'letterSpacing: ${style.letterSpacing},'
+      'height: ${(style.lineHeightPercent / 100).toStringAsFixed(10)},'
       'color: $color,'
       ')';
 }

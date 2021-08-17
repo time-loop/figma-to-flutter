@@ -10,7 +10,8 @@ class FigmaApiGenerator {
 
   Future<dynamic> getFile(String fileKey) async {
     var response = await http.get(
-        "https://api.figma.com/v1/files/$fileKey?geometry=paths",
+      Uri.https('api.figma.com', '/v1/files/$fileKey?geometry=paths'),
+        // "https://api.figma.com/v1/files/$fileKey?geometry=paths",
         headers: {
           "X-FIGMA-TOKEN": this.authToken,
         });

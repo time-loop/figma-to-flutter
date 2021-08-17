@@ -25,7 +25,7 @@ class EffectsGenerator {
 
       return catalog.get("(Paint()\n" +
           "..color = $color\n" +
-          "..maskFilter = MaskFilter.blur(BlurStyle.normal, BoxShadow.convertRadiusToSigma($radius))" +
+          "..maskFilter = MaskFilter.blur(BlurStyle.normal, Shadow.convertRadiusToSigma($radius))" +
           ")");
     }
 

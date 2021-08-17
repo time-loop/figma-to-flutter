@@ -17,7 +17,7 @@ class FileBuildContext {
   final LibraryBuilder library;
   final FileResponse response;
   final DataClassBuilder colors;
-  final DataClassBuilder text;
+  final TextDataClassBuilder text;
   final DataClassBuilder gradients;
   final DataClassBuilder shadows;
   final DataClassBuilder borders;
@@ -37,7 +37,7 @@ class FileBuildContext {
           name: colorThemeClassName ?? '${name}ColorsData',
           fallbackConstructorName: fallbackConstructorName,
         ),
-        this.text = DataClassBuilder(
+        this.text = TextDataClassBuilder(
           name: textThemeClassName ?? '${name}TextData',
           fallbackConstructorName: fallbackConstructorName,
         ),

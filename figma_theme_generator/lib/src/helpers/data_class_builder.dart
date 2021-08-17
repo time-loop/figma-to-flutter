@@ -129,3 +129,53 @@ class DataClassBuilder {
     return builder.build();
   }
 }
+
+class TextDataClassBuilder extends DataClassBuilder {
+  TextDataClassBuilder({
+    @required String name,
+    String fallbackConstructorName = 'fallback',
+  }) : super(name: name, fallbackConstructorName: fallbackConstructorName);
+
+  @override
+  Class build([bool constantFallback = true]) {
+    builder.constructors.add(_defaultConstructor.build());
+    final fallbackConstructor = ConstructorBuilder()
+      ..name = fallbackConstructorName
+      ..factory = true;
+
+    final fallbackProperties =
+        _defaultValues.entries.map((e) => '${e.key}: ${e.value},').join('');
+    fallbackConstructor.lambda = true;
+    fallbackConstructor.body = Code(
+        '${constantFallback ? 'const' : ''} ${builder.name}($fallbackProperties)');
+    builder.constructors.add(fallbackConstructor.build());
+
+    final fallbackColorConstructor = ConstructorBuilder()
+      ..name = 'fallbackWithColor'
+      ..factory = true;
+
+    fallbackColorConstructor.lambda = false;
+    final copiedProps = _defaultValues.entries
+        .map((e) =>
+            '${e.key}: ${fallbackConstructor.name}.${e.key}.copyWith(color: defaultColor),')
+        .join('');
+    fallbackColorConstructor.body = Code(
+        'final ${fallbackConstructor.name}= ${builder.name}.${fallbackConstructor.name}(); return ${builder.name}($copiedProps);');
+    final parameter = ParameterBuilder()
+      ..name = 'defaultColor'
+      ..annotations.add(CodeExpression(Code("required")))
+      ..named = true
+      ..type = Reference('Color')
+      ..toThis = false;
+
+    fallbackColorConstructor.optionalParameters.add(parameter.build());
+
+    builder.constructors.add(fallbackColorConstructor.build());
+
+    builder.methods.add(_buildCopyWith());
+    builder.methods.add(_buildEquals());
+    builder.methods.add(_buildHash());
+
+    return builder.build();
+  }
+}

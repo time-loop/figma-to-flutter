@@ -216,7 +216,8 @@ class TextStyleBuilder {
     context.text.addField(
       'TextStyle',
       name,
-      buildTextStyleInstance(package, node.style, node.fills),
+      buildTextStyleInstance(package, node.style, node.fills,
+          debugLabel: style.name),
     );
   }
 }

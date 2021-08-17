@@ -1,6 +1,10 @@
 name: flutter_figma_sample
 description: A new Flutter project.
 
+environment:
+  sdk: '>=2.10.0 <3.0.0'
+
+
 dependencies:
   path_drawing:
   figma_to_flutter_generator_annotations:

@@ -9236,7 +9236,7 @@ class _EffectCatalog {
     this.paint_0 = (Paint()
       ..color = _ColorCatalog.instance.color_17
       ..maskFilter = MaskFilter.blur(
-          BlurStyle.normal, BoxShadow.convertRadiusToSigma(20.0)));
+          BlurStyle.normal, Shadow.convertRadiusToSigma(20.0)));
   }
 
   Paint paint_0;

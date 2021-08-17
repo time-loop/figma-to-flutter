@@ -1,7 +1,8 @@
-import 'package:example/pages/component_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:figma/figma.dart' as figma;
 import 'package:flutter_figma/figma.dart';
+
+import 'component_preview.dart';
 
 class FileComponentsPage extends StatefulWidget {
   final String apiKey;

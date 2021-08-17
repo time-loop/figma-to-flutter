@@ -3,11 +3,15 @@ version: 0.1.0
 authors:
 - Aloïs Deniel <alois.deniel@outlook.com>
 description: a tool for generating Flutter widgets from Figma components.
+
+environment:
+  sdk: '>=2.10.0 <3.0.0'
+  
 dependencies:
-  path_parsing: 0.1.2
-  http: 0.11.3+17
-  vector_math: 2.0.8
-  yaml: 2.1.15
-  recase: 1.0.0+1
-  source_gen: 0.8.3
-  code_builder: 3.1.1 
+  path_parsing: ^0.2.1
+  http: ^0.13.3
+  vector_math: ^2.1.0
+  yaml: ^3.1.0
+  recase: ^4.0.0
+  source_gen: ^1.0.1
+  code_builder: ^4.0.0

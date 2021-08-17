@@ -805,15 +805,15 @@ class _EffectCatalog {
     this.paint_0 = (Paint()
       ..color = _ColorCatalog.instance.color_1
       ..maskFilter = MaskFilter.blur(
-          BlurStyle.normal, BoxShadow.convertRadiusToSigma(8.0)));
+          BlurStyle.normal, Shadow.convertRadiusToSigma(8.0)));
     this.paint_1 = (Paint()
       ..color = _ColorCatalog.instance.color_3
       ..maskFilter = MaskFilter.blur(
-          BlurStyle.normal, BoxShadow.convertRadiusToSigma(6.0)));
+          BlurStyle.normal, Shadow.convertRadiusToSigma(6.0)));
     this.paint_2 = (Paint()
       ..color = _ColorCatalog.instance.color_5
       ..maskFilter = MaskFilter.blur(
-          BlurStyle.normal, BoxShadow.convertRadiusToSigma(10.0)));
+          BlurStyle.normal, Shadow.convertRadiusToSigma(10.0)));
   }
 
   Paint paint_0;

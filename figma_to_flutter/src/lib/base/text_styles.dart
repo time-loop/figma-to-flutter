@@ -9,14 +9,14 @@ import 'package:figma_to_flutter/tools/format.dart';
 class TextStyleGenerator {
   CodeCatalog catalog = CodeCatalog("_TextStyleCatalog", "ui.TextStyle");
 
-  Code generate(dynamic map, String color) {
+  Code generate(dynamic map, String color, {String debugLabel}) {
     var fontSize = map["fontSize"].toDouble();
     var textAlignHorizontal = map["textAlignHorizontal"] as String;
     var textAlignVertical = map["textAlignVertical"] as String;
     var fontFamily = map["fontFamily"] as String;
     var letterSpacing = map["letterSpacing"].toDouble();
     var lineHeightPx = map["lineHeightPx"].toDouble();
-    var lineHeightPercent = map["letterSpacing"].toDouble();
+    var lineHeightPercent = map["lineHeightPercent"].toDouble() / 100;
     var fontWeight = map["fontWeight"].toInt();
 
     return catalog.get("ui.TextStyle(" +
@@ -24,6 +24,10 @@ class TextStyleGenerator {
         "color: $color," +
         "fontSize: ${toFixedDouble(fontSize)}," +
         "fontWeight: FontWeight.w$fontWeight," +
+        "letterSpacing: ${toFixedDouble(letterSpacing)}," +
+        "height: ${toFixedDouble(lineHeightPercent)}," +
+        "height: ${toFixedDouble(lineHeightPercent)}," +
+        "debugLabel: ${debugLabel ?? null}," +
         ")");
   }
 }
