@@ -9,12 +9,13 @@ import 'context.dart';
 
 class FileBuilder {
   const FileBuilder();
+
   void build({
-    @required LibraryBuilder library,
-    @required String name,
-    @required String package,
-    @required String fallbackConstructorName,
-    @required FileResponse response,
+    required LibraryBuilder library,
+    required String name,
+    required String package,
+    required String fallbackConstructorName,
+    required FileResponse response,
   }) {
     final nameFormat = createClassName(name);
     final context = FileBuildContext(
@@ -23,7 +24,7 @@ class FileBuilder {
       library: library,
       response: response,
     );
-    response.styles.forEach((key, style) {
+    response.styles?.forEach((key, style) {
       final styles = context.findNodeWithStyle(key);
       if (styles.isNotEmpty) {
         for (var node in styles) {
@@ -36,7 +37,8 @@ class FileBuilder {
               break;
             case StyleTypeKey.text:
               if (node.node is Text)
-                TextStyleBuilder(package).build(context, style, node.node);
+                TextStyleBuilder(package)
+                    .build(context, style, node.node as Text);
               break;
             case StyleTypeKey.effect:
               const EffectBuilder().build(context, style, node.node);
@@ -53,32 +55,32 @@ class FileBuilder {
     );
 
     if (context.colors.builder.fields.isNotEmpty) {
-      theme.addField(context.colors.builder.name, 'colors',
+      theme.addField(context.colors.builder.name ?? '', 'colors',
           '${context.colors.builder.name}.$fallbackConstructorName()');
     }
 
     if (context.text.builder.fields.isNotEmpty) {
-      theme.addField(context.text.builder.name, 'text',
+      theme.addField(context.text.builder.name ?? '', 'text',
           '${context.text.builder.name}.$fallbackConstructorName()');
     }
 
     if (context.gradients.builder.fields.isNotEmpty) {
-      theme.addField(context.gradients.builder.name, 'gradients',
+      theme.addField(context.gradients.builder.name ?? '', 'gradients',
           '${context.gradients.builder.name}.$fallbackConstructorName()');
     }
 
     if (context.borders.builder.fields.isNotEmpty) {
-      theme.addField(context.borders.builder.name, 'borders',
+      theme.addField(context.borders.builder.name ?? '', 'borders',
           '${context.borders.builder.name}.$fallbackConstructorName()');
     }
 
     if (context.shadows.builder.fields.isNotEmpty) {
-      theme.addField(context.shadows.builder.name, 'shadows',
+      theme.addField(context.shadows.builder.name ?? '', 'shadows',
           '${context.shadows.builder.name}.$fallbackConstructorName()');
     }
 
     if (context.radius.builder.fields.isNotEmpty) {
-      theme.addField(context.radius.builder.name, 'radii',
+      theme.addField(context.radius.builder.name ?? '', 'radii',
           '${context.radius.builder.name}.$fallbackConstructorName()');
     }
 
@@ -101,15 +103,16 @@ class FillStyleBuilder {
   const FillStyleBuilder();
 
   void build(FileBuildContext context, Style style, Node node) {
-    final nameFormat = createFieldName(style.name);
+    final nameFormat = createFieldName(style.name ?? '');
     final fills = node.extractFills();
 
     /// Extracting colors
     final colorFills = fills
-        .where(
-          (x) => x.type == PaintType.solid && x.color != null,
-        )
-        .toList();
+            ?.where(
+              (x) => x.type == PaintType.solid && x.color != null,
+            )
+            .toList() ??
+        [];
     for (var i = 0; i < colorFills.length; i++) {
       var name = nameFormat;
       if (i > 0) name = '$name$i';
@@ -117,19 +120,28 @@ class FillStyleBuilder {
       context.colors.addField(
         'Color',
         name,
-        buildColorInstance(fill.color, fill.opacity),
+        buildColorInstance(
+            fill.color ??
+                Color(
+                  a: 0,
+                  r: 0,
+                  g: 0,
+                  b: 0,
+                ),
+            fill.opacity ?? 0.0),
       );
     }
 
     /// Extracting linear gradients
     final linearGradientFills = fills
-        .where(
-          (x) => const [
-            PaintType.gradientLinear,
-            PaintType.gradientAngular,
-          ].contains(x.type),
-        )
-        .toList();
+            ?.where(
+              (x) => const [
+                PaintType.gradientLinear,
+                PaintType.gradientAngular,
+              ].contains(x.type),
+            )
+            .toList() ??
+        [];
     for (var i = 0; i < linearGradientFills.length; i++) {
       var name = nameFormat;
       if (i > 0) name = '$name$i';
@@ -147,7 +159,7 @@ class BorderStyleBuilder {
   const BorderStyleBuilder();
 
   void build(FileBuildContext context, Style style, Node node) {
-    final nameFormat = createFieldName(style.name);
+    final nameFormat = createFieldName(style.name ?? '');
     final strokes = node.extractStrokes();
 
     /// Extracting colors
@@ -163,7 +175,15 @@ class BorderStyleBuilder {
       context.colors.addField(
         'Color',
         name,
-        buildColorInstance(stroke.paint.color, stroke.paint.opacity),
+        buildColorInstance(
+            stroke.paint.color ??
+                Color(
+                  a: 0,
+                  r: 0,
+                  g: 0,
+                  b: 0,
+                ),
+            stroke.paint.opacity ?? 0.0),
       );
       context.borders.addField(
         'BorderSide',
@@ -185,15 +205,16 @@ class EffectBuilder {
   const EffectBuilder();
 
   void build(FileBuildContext context, Style style, Node node) {
-    final nameFormat = createFieldName(style.name);
+    final nameFormat = createFieldName(style.name ?? '');
     final effects = node.extractEffects();
 
     /// Extracting colors
     final shadowEffects = effects
-        .where(
-          (x) => x.type == EffectType.dropShadow,
-        )
-        .toList();
+            ?.where(
+              (x) => x.type == EffectType.dropShadow,
+            )
+            .toList() ??
+        [];
     for (var i = 0; i < shadowEffects.length; i++) {
       var name = nameFormat;
       if (i > 0) name = '$name$i';
@@ -209,14 +230,17 @@ class EffectBuilder {
 
 class TextStyleBuilder {
   final String package;
+
   const TextStyleBuilder(this.package);
+
   void build(FileBuildContext context, Style style, Text node) {
-    final name = createFieldName(style.name);
+    final name = createFieldName(style.name ?? '');
 
     context.text.addField(
       'TextStyle',
       name,
-      buildTextStyleInstance(package, node.style, node.fills,
+      buildTextStyleInstance(
+          package, node.style ?? TypeStyle(), node.fills ?? [],
           debugLabel: style.name),
     );
   }

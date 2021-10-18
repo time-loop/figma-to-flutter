@@ -5,10 +5,10 @@ class DataClassBuilder {
   final String fallbackConstructorName;
   final ClassBuilder builder;
   final Map<String, String> _defaultValues = {};
-  ConstructorBuilder _defaultConstructor;
+  late ConstructorBuilder _defaultConstructor;
 
   DataClassBuilder({
-    @required String name,
+    required String name,
     this.fallbackConstructorName = 'fallback',
   }) : this.builder = ClassBuilder()..name = name {
     _defaultConstructor = ConstructorBuilder()..constant = true;
@@ -43,7 +43,7 @@ class DataClassBuilder {
 
   Method _buildCopyWith() {
     final result = MethodBuilder()
-      ..returns = refer(builder.name)
+      ..returns = refer(builder.name ?? '')
       ..name = 'copyWith';
 
     result.optionalParameters.addAll(
@@ -132,7 +132,7 @@ class DataClassBuilder {
 
 class TextDataClassBuilder extends DataClassBuilder {
   TextDataClassBuilder({
-    @required String name,
+    required String name,
     String fallbackConstructorName = 'fallback',
   }) : super(name: name, fallbackConstructorName: fallbackConstructorName);
 

@@ -34,19 +34,26 @@ String buildColorInstance(Color color, double opacity) {
 
 String buildBoxShadowInstance(Effect effect) {
   return 'BoxShadow('
-      'color: ${buildColorInstance(effect.color, 1.0)},'
+      'color: ${buildColorInstance(effect.color ?? Color(
+            a: 0,
+            r: 0,
+            g: 0,
+            b: 0,
+          ), 1.0)},'
       'blurRadius: ${effect.radius},'
-      'offset: Offset(${effect.offset.x}, ${effect.offset.y}),'
+      'offset: Offset(${effect.offset?.x ?? 0}, ${effect.offset?.y ?? 0}),'
       ')';
 }
 
 String buildTextStyleInstance(
-    String package, TypeStyle style, List<Paint> fills, {String debugLabel}) {
+    String package, TypeStyle style, List<Paint> fills,
+    {String? debugLabel}) {
   /// Only color paint should be used as text fills since Flutter
   /// is not really optimized for drawing gradient fills or image fills
   final colorPaint = (style.fills ?? (fills ?? const <Paint>[])).firstWhere(
     (x) => x.type == PaintType.solid,
     orElse: () => Paint(
+      visible: true,
       color: Color(
         a: 0,
         r: 0,
@@ -56,22 +63,30 @@ String buildTextStyleInstance(
       opacity: 0.0,
     ),
   );
-  final color = buildColorInstance(colorPaint.color, colorPaint.opacity);
+  final color = buildColorInstance(
+      colorPaint.color ??
+          Color(
+            a: 0,
+            r: 0,
+            g: 0,
+            b: 0,
+          ),
+      colorPaint.opacity ?? 0.0);
   return 'TextStyle('
-      'debugLabel: \'${debugLabel ?? (style.fontFamily + ' ' + style.fontSize.toString() + ' ' + style.fontWeight.toString())}\','
+      'debugLabel: \'${debugLabel ?? (style.fontFamily ?? '' + ' ' + style.fontSize.toString() + ' ' + style.fontWeight.toString())}\','
       'fontFamily: \'${style.fontFamily}\','
       '${package != null ? 'package: \'$package\',' : ''}'
-      'fontSize: ${style.fontSize.buildDouble()},'
-      'fontWeight: FontWeight.w${style.fontWeight.toInt()},'
+      'fontSize: ${style.fontSize?.buildDouble()},'
+      'fontWeight: FontWeight.w${style.fontWeight?.toInt()},'
       'letterSpacing: ${style.letterSpacing},'
-      'height: ${(style.lineHeightPercent / 100).toStringAsFixed(10)},'
+      'height: ${(style.lineHeightPercent ?? 0 / 100).toStringAsFixed(10)},'
       'color: $color,'
       ')';
 }
 
 String buildGradientInstance(Paint paint) {
-  var begin = paint.gradientHandlePositions[0];
-  var end = paint.gradientHandlePositions[1];
+  var begin = paint.gradientHandlePositions![0];
+  var end = paint.gradientHandlePositions![1];
   begin = Vector2D(
     x: (begin.x - 0.5) * 2.0,
     y: (begin.y - 0.5) * 2.0,
@@ -85,17 +100,28 @@ String buildGradientInstance(Paint paint) {
   var endAlignment =
       'Alignment(${end.x.buildDouble()}, ${end.y.buildDouble()})';
   final stops = "[" +
-      paint.gradientStops
+      paint.gradientStops!
           .map(
-            (e) => '${e.position.buildDouble()},',
+            (e) => '${e.position?.buildDouble()},',
           )
           .join("") +
       "]";
   final colorValues = paint.gradientStops
-      .map(
-        (e) => buildColorInstance(e.color, 1.0) + ',',
-      )
-      .toList();
+          ?.map(
+            (e) =>
+                buildColorInstance(
+                    e.color ??
+                        Color(
+                          a: 0,
+                          r: 0,
+                          g: 0,
+                          b: 0,
+                        ),
+                    1.0) +
+                ',',
+          )
+          .toList() ??
+      [];
   var colors = "[" + colorValues.join("") + "]";
 
   if (paint.type == PaintType.gradientRadial) {
@@ -119,7 +145,15 @@ String buildGradientInstance(Paint paint) {
 }
 
 String buildBorderSideInstance(Paint colorPaint, double width) {
-  final color = buildColorInstance(colorPaint.color, colorPaint.opacity);
+  final color = buildColorInstance(
+      colorPaint.color ??
+          Color(
+            a: 0,
+            r: 0,
+            g: 0,
+            b: 0,
+          ),
+      colorPaint.opacity ?? 0.0);
   return 'BorderSide('
       'style: BorderStyle.solid,'
       'width: ${width.buildDouble()},'

@@ -6,6 +6,7 @@ import 'package:meta/meta.dart';
 class NodeStyle {
   final StyleTypeKey type;
   final Node node;
+
   const NodeStyle(
     this.node,
     this.type,
@@ -22,17 +23,18 @@ class FileBuildContext {
   final DataClassBuilder shadows;
   final DataClassBuilder borders;
   final DataClassBuilder radius;
+
   FileBuildContext({
-    @required this.name,
-    @required this.response,
-    @required this.library,
-    @required String fallbackConstructorName,
-    String colorThemeClassName,
-    String textThemeClassName,
-    String gradientsThemeClassName,
-    String shadowsThemeClassName,
-    String bordersThemeClassName,
-    String radiusThemeClassName,
+    required this.name,
+    required this.response,
+    required this.library,
+    required String fallbackConstructorName,
+    String? colorThemeClassName,
+    String? textThemeClassName,
+    String? gradientsThemeClassName,
+    String? shadowsThemeClassName,
+    String? bordersThemeClassName,
+    String? radiusThemeClassName,
   })  : this.colors = DataClassBuilder(
           name: colorThemeClassName ?? '${name}ColorsData',
           fallbackConstructorName: fallbackConstructorName,
@@ -62,28 +64,29 @@ class FileBuildContext {
     return _findNodeWithStyle(response.document, id);
   }
 
-  List<NodeStyle> _findNodeWithStyle(Node node, String id) {
+  List<NodeStyle> _findNodeWithStyle(Node? node, String id) {
     if (node is Vector) {
       if (node.styles != null) {
-        return node.styles.entries
-            .where(
-              (x) => x.value == id,
-            )
-            .map((e) => NodeStyle(node, e.key))
-            .toList();
+        return node.styles?.entries
+                .where(
+                  (x) => x.value == id,
+                )
+                .map((e) => NodeStyle(node, e.key))
+                .toList() ??
+            <NodeStyle>[];
       }
     } else if (node is Canvas) {
-      for (var child in node.children) {
+      for (var child in node.children ?? []) {
         final result = _findNodeWithStyle(child, id);
         if (result.isNotEmpty) return result;
       }
     } else if (node is Document) {
-      for (var child in node.children) {
+      for (var child in node.children ?? []) {
         final result = _findNodeWithStyle(child, id);
         if (result.isNotEmpty) return result;
       }
     } else if (node is Frame) {
-      for (var child in node.children) {
+      for (var child in node.children ?? []) {
         final result = _findNodeWithStyle(child, id);
         if (result.isNotEmpty) return result;
       }

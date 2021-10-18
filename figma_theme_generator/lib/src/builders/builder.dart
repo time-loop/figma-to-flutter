@@ -7,19 +7,17 @@ import 'nodes.dart';
 
 class FigmaThemeBuilder {
   final String fallbackConstructorName;
+
   const FigmaThemeBuilder({
     this.fallbackConstructorName = 'fallback',
   });
 
   Future<String> download({
-    @required String name,
-    @required String package,
-    @required String apiToken,
-    @required String fileKey,
+    required String name,
+    required String package,
+    required String apiToken,
+    required String fileKey,
   }) async {
-    assert(apiToken != null);
-    assert(fileKey != null);
-
     final client = FigmaClient(apiToken);
     final file = await client.getFile(fileKey);
 
